@@ -7,12 +7,8 @@ from typing import List
 from database import get_db
 
 
-
 # Initialize the router
 router = APIRouter()
-
-
-
 
 
 
@@ -22,7 +18,6 @@ def get_comments_for_tea(tea_id: int, db: Session = Depends(get_db)):
     if not tea:
         raise HTTPException(status_code=404, detail="Tea not found")
     return tea.comments
-
 
 
 
@@ -39,13 +34,18 @@ def get_single_comments_for_tea(comment_id: int, db: Session = Depends(get_db)):
 
 
 
+
 @router.post("/teas/{tea_id}/comments", response_model=CommentSchema)
-def create_comment(comment: CommentSchema, db: Session = Depends(get_db)):
-   new_comment = CommentModel (**comment.dict()) 
-   db.add(new_comment)
-   db.commit()
-   db.refresh(new_comment)
-   return new_comment
+def create_comment(tea_id: int, comment: CommentSchema, db: Session = Depends(get_db)):
+    tea = db.query(TeaModel).filter(TeaModel.id == tea_id).first()
+    if not tea:
+        raise HTTPException(status_code=404, detail="Tea not found")
+
+    new_comment = CommentModel(**comment.dict(), tea_id=tea_id)
+    db.add(new_comment)
+    db.commit()
+    db.refresh(new_comment)
+    return new_comment
 
 
 

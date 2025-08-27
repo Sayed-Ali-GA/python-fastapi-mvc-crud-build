@@ -43,3 +43,4 @@ def login(user: UserLoginSchema, db: Session = Depends(get_db)):
 
     # Return token and a success message
     return {"token": token, "message": "Login successful"}
+  

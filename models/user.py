@@ -3,6 +3,8 @@ from .base import Base
 from passlib.context import CryptContext # Import new package
 from datetime import datetime, timedelta, timezone 
 import jwt 
+from sqlalchemy.orm import relationship
+
 
 from config.environment import jwt_secret
 
@@ -16,6 +18,8 @@ class UserModel(Base):
     username = Column(String, nullable=False, unique=True)
     email = Column(String, nullable=False, unique=True)
     password_hash = Column(String, nullable=True)  # Add new field for storing the hashed password
+
+    teas = relationship('TeaModel', back_populates='user')
 
     def set_password(self, password: str):
         self.password_hash = pwd_context.hash(password)

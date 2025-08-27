@@ -4,6 +4,8 @@ from data.tea_data import teas_list, comments_list
 from config.environment import db_URI
 from sqlalchemy import create_engine
 from models.base import Base # import base model
+from data.user_data import user_list
+
 
 engine = create_engine(db_URI)
 SessionLocal = sessionmaker(bind=engine)
@@ -24,8 +26,13 @@ try:
     # Seed comments after teas
     db.add_all(comments_list)
     db.commit()
+
+
+    db.add_all(user_list)
+    db.commit()
+
     db.close()
 
     print("Database seeding complete! 👋")
 except Exception as e:
-    print("An error occurred:", e)
+    print("An error occurred:", e) 
